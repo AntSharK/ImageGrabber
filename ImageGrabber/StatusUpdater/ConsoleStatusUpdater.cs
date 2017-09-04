@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace ImageGrabber
+namespace ImageGrabber.StatusUpdater
 {
     /// <summary>
     /// A class to update status
     /// Can be abstracted away like general logging, but not needed for now
     /// </summary>
-    public class ConsoleStatusUpdater
+    public class ConsoleStatusUpdater : IStatusUpdater
     {
         private const string StatusFormat = "{0}::{1}.{2} - {3}";
 

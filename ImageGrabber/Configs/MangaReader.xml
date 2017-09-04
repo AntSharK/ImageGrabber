@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ImageDownloader>
+  <UrlFormat>http://www.mangareader.net/{0}/{1}/{2}</UrlFormat>
+  <ImageSections>
+    <ImageSection>
+      <Name>Fairy Tail</Name>
+      <UrlName>fairy-tail</UrlName>
+      <LastSubsection>545</LastSubsection>
+    </ImageSection>
+  </ImageSections>
+</ImageDownloader>
