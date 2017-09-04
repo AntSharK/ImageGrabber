@@ -24,7 +24,7 @@ namespace ImageGrabber.ImageDownloader
         /// The Image Sections
         /// </summary>
         [XmlArray("ImageSections")]
-        [XmlArrayItem("ImageSections", typeof(ImageSection))]
+        [XmlArrayItem("ImageSection", typeof(ImageSection))]
         public ImageSection[] ImageSections;
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace ImageGrabber.ImageDownloader
             var imageSection = this.ImageSections.FirstOrDefault((sectionToFind) => sectionToFind.Name.Equals(imageSectionName));
             if (imageSection != null)
             {
-                imageSectionName = imageSection.Name;
+                imageSectionName = imageSection.UrlName;
                 if (maxChapter > imageSection.LastSubsection)
                 {
                     maxChapter = imageSection.LastSubsection;
