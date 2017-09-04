@@ -94,7 +94,7 @@ namespace ImageGrabber.ImageDownloader
 
             while (chapterIsValid && currentChapter <= maxChapter)
             {
-                var fileDirectory = this.writeFolder + "\\" + properName + "\\" + currentChapter;
+                var fileDirectory = this.writeFolder + "\\" + properName + "\\" + currentChapter.ToString().PadLeft(4, '0');
                 var currentPage = 1;
                 var pageIsValid = true;
 
