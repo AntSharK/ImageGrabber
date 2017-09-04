@@ -78,9 +78,11 @@ namespace ImageGrabber.ImageDownloader
         public async Task DownloadImages(string imageSectionName, int minChapter, int maxChapter)
         {
             var imageSection = this.ImageSections.FirstOrDefault((sectionToFind) => sectionToFind.Name.Equals(imageSectionName));
+            string properName = imageSectionName;
+            string urlName = imageSectionName;
             if (imageSection != null)
             {
-                imageSectionName = imageSection.UrlName;
+                urlName = imageSection.UrlName;
                 if (maxChapter > imageSection.LastSubsection)
                 {
                     maxChapter = imageSection.LastSubsection;
@@ -92,18 +94,18 @@ namespace ImageGrabber.ImageDownloader
 
             while (chapterIsValid && currentChapter <= maxChapter)
             {
-                var fileDirectory = this.writeFolder + "\\" + imageSectionName + "\\" + currentChapter;
+                var fileDirectory = this.writeFolder + "\\" + properName + "\\" + currentChapter;
                 var currentPage = 1;
                 var pageIsValid = true;
 
                 while (pageIsValid && currentPage <= 999)
                 {
-                    var requestUrl = string.Format(this.UrlFormat, imageSectionName, currentChapter, currentPage);
+                    var requestUrl = string.Format(this.UrlFormat, urlName, currentChapter, currentPage);
                     var response = await Utils.GetResponseBody(requestUrl);
 
                     if (response.StartsWith(Utils.ErrorPrefix))
                     {
-                        this.statusUpdater.UpdateStatus(imageSectionName, currentChapter, currentPage, response);
+                        this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, response);
                         pageIsValid = false;
                     }
                     else
@@ -112,16 +114,16 @@ namespace ImageGrabber.ImageDownloader
                         {
                             var imageUrl = this.imageUrlFinder.GetImageUrl(response);
                             var fileExtension = Path.GetExtension(imageUrl);
-                            this.statusUpdater.UpdateStatus(imageSectionName, currentChapter, currentPage, "DOWNLOADING.");
+                            this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "DOWNLOADING.");
                             Utils.DownloadFile(imageUrl, fileDirectory, currentPage + fileExtension);
                             currentPage++;
-                            this.statusUpdater.UpdateStatus(imageSectionName, currentChapter, currentPage, "FINISHED DOWNLOADING.");
+                            this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "FINISHED DOWNLOADING.");
                         }
                         catch (Exception ex)
                         {
                             Utils.LogException(fileDirectory, "PAGE " + currentPage + " --- " + ex.ToString());
                             pageIsValid = false;
-                            this.statusUpdater.UpdateStatus(imageSectionName, currentChapter, currentPage, "ERROR GETTING IMAGE.");
+                            this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "ERROR GETTING IMAGE.");
                         }
                     }
                 }
@@ -129,12 +131,12 @@ namespace ImageGrabber.ImageDownloader
                 if (currentPage <= 1)
                 {
                     chapterIsValid = false;
-                    this.statusUpdater.UpdateStatus(imageSectionName, currentChapter, currentPage, "**ERROR ON FIRST PAGE**");
+                    this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "**ERROR ON FIRST PAGE**");
                 }
                 else
                 {
                     currentChapter++;
-                    this.statusUpdater.UpdateStatus(imageSectionName, currentChapter, currentPage, "MOVING TO NEXT SECTION.");
+                    this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "MOVING TO NEXT SECTION.");
                 }
             }
         }
