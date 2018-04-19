@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ImageDownloader>
+  <UrlFormat>http://www.mangakakalot.com/chapter/{0}/chapter_{1}/</UrlFormat>
+  <SelectionCriteria>FindNumberedImages</SelectionCriteria>
+  <ImageSections>
+    <ImageSection>
+      <Name>Yowamushi Pedal</Name>
+      <UrlName>yowamushi_pedal</UrlName>
+      <LastSubsection>387</LastSubsection>
+    </ImageSection>
+  </ImageSections>
+</ImageDownloader>

@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ImageDownloader>
   <UrlFormat>http://www.mangareader.net/{0}/{1}/{2}</UrlFormat>
+  <SelectionCriteria>FindLargestImage</SelectionCriteria>
   <ImageSections>
     <ImageSection>
       <Name>Fairy Tail</Name>

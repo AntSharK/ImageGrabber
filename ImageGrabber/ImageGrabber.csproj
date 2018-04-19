@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\FindNumberedImages.cs" />
     <Compile Include="Behaviors\FindLargestImage.cs" />
     <Compile Include="Behaviors\IImageUrlFinder.cs" />
     <Compile Include="ImageDownloader\ImageDownloader.cs" />
@@ -77,6 +78,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Configs\Mangakakalot.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Configs\MangaReader.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

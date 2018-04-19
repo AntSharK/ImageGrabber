@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using System.Collections.Generic;
 
 namespace ImageGrabber.Behaviors
 {
@@ -8,7 +9,7 @@ namespace ImageGrabber.Behaviors
     public class FindLargestImage : IImageUrlFinder
     {
         /// <inheritdoc />
-        public string GetImageUrl(string htmlBody)
+        public IEnumerable<string> GetImageUrls(string htmlBody)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(htmlBody);
@@ -30,7 +31,7 @@ namespace ImageGrabber.Behaviors
                 }
             }
 
-            return imageUrl;
+            yield return imageUrl;
         }
     }
 }

@@ -28,6 +28,12 @@ namespace ImageGrabber.ImageDownloader
         public ImageSection[] ImageSections;
 
         /// <summary>
+        /// The criteria used to select the images
+        /// </summary>
+        [XmlElement("SelectionCriteria")]
+        public string SelectionCriteria;
+
+        /// <summary>
         /// The folder to write to
         /// </summary>
         private string writeFolder;
@@ -40,7 +46,7 @@ namespace ImageGrabber.ImageDownloader
         /// <summary>
         /// The image URL finder
         /// </summary>
-        private IImageUrlFinder imageUrlFinder = new FindLargestImage();
+        private IImageUrlFinder imageUrlFinder;
 
         /// <summary>
         /// Creates an ImageDownloader object by loading from a configuration file
@@ -56,6 +62,8 @@ namespace ImageGrabber.ImageDownloader
                 {
                     var imageDownloader = serializer.Deserialize(streamReader) as ImageDownloader;
                     imageDownloader.writeFolder = writeFolder;
+                    imageDownloader.SetImageUrlFinder();
+
                     return imageDownloader;
                 }
             }
@@ -66,6 +74,23 @@ namespace ImageGrabber.ImageDownloader
         /// </summary>
         private ImageDownloader()
         {
+        }
+
+        /// <summary>
+        /// Sets the Image URL Finder
+        /// </summary>
+        public void SetImageUrlFinder()
+        {
+            switch (this.SelectionCriteria)
+            {
+                case "FindNumberedImages":
+                    this.imageUrlFinder = new FindNumberedImages();
+                    break;
+                case "FindLargestImage":
+                default:
+                    this.imageUrlFinder = new FindLargestImage();
+                    break;
+            }
         }
 
         /// <summary>
@@ -112,12 +137,21 @@ namespace ImageGrabber.ImageDownloader
                     {
                         try
                         {
-                            var imageUrl = this.imageUrlFinder.GetImageUrl(response);
-                            var fileExtension = Path.GetExtension(imageUrl);
-                            this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "DOWNLOADING.");
-                            Utils.DownloadFile(imageUrl, fileDirectory, currentPage + fileExtension);
-                            currentPage++;
-                            this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "FINISHED DOWNLOADING.");
+                            foreach (var imageUrl in this.imageUrlFinder.GetImageUrls(response))
+                            {
+                                var fileExtension = Path.GetExtension(imageUrl);
+                                this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "DOWNLOADING.");
+                                Utils.DownloadFile(imageUrl, fileDirectory, currentPage + fileExtension);
+                                this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "FINISHED DOWNLOADING.");
+                                currentPage++;
+                            }
+
+                            // If the string is equal with or without the current page, then the current page parameter is not valid
+                            if (string.Format(this.UrlFormat, urlName, currentChapter, currentPage) == string.Format(this.UrlFormat, urlName, currentChapter))
+                            {
+                                pageIsValid = false;
+                                this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "FINISHED DOWNLOADING PAGE.");
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -135,8 +169,8 @@ namespace ImageGrabber.ImageDownloader
                 }
                 else
                 {
-                    currentChapter++;
                     this.statusUpdater.UpdateStatus(properName, currentChapter, currentPage, "MOVING TO NEXT SECTION.");
+                    currentChapter++;
                 }
             }
         }
